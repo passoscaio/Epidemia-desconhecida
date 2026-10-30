@@ -1,12 +1,12 @@
-import {aleatorio} from ./aleatorio.js;
-import {perguntas} from ./perguntas.js;
+import {aleatorio, nome} from './aleatorio.js';
+import {perguntas} from './perguntas.js';
 
-const caixaPrincipal = document.querySelector(“.caixa-principal”);
-const caixaPerguntas = document.querySelector(“.caixa-perguntas”);
-const caixaAlternativas = document.querySelector(“.caixa-alternativas”);
-const caixaResultado = document.querySelector(“.caixa-resultado”);
-const textoResultado = document.querySelector(“.texto-resultado”);
-const botaoJogarNovamente = document.querySelector(“.novamente-btn”);
+const caixaPrincipal = document.querySelector(".caixa-principal");
+const caixaPerguntas = document.querySelector(".caixa-perguntas");
+const caixaAlternativas = document.querySelector(".caixa-alternativas");
+const caixaResultado = document.querySelector(".caixa-resultado");
+const textoResultado = document.querySelector(".texto-resultado"); 
+const botaoJogarNovamente = document.querySelector(".novamente-btn");
 
 export const perguntas = [
 {
@@ -17,8 +17,9 @@ export function aleatorio (lista){
 
 function respostaSelecionada(opcaoSelecionada) {
     const afirmacoes = aleatorio(opcaoSelecionada.afirmacao);
-historiaFinal += afirmacoes + “ “;
-atual++;
+    historiaFinal += afirmacoes + " ";
+    atual++;
+}
 
 function jogaNovamente(){
     atual = 0;
@@ -28,10 +29,18 @@ function jogaNovamente(){
 }
 
 function mostraResultado() {
-    caixaPerguntas.textContent = "Em 2049...";
+    caixaPerguntas.textContent = `Em 2049, ${nome}`;
     textoResultado.textContent = historiaFinal;
     caixaAlternativas.textContent = "";
     caixaResultado.classList.add("mostrar");
     botaoJogarNovamente.addEventListener("click", jogaNovamente);
 
 }
+
+function substituiNome(){
+    for(const pergunta of perguntas){
+        pergunta.enunciado = pergunta.enunciado.replace(/você/g, nome);
+    }
+}
+
+substituiNome();
