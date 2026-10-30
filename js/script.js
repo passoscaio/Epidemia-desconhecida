@@ -1,5 +1,5 @@
-import {aleatorio} from ‘./aleatorio.js’;
-import {perguntas} from ‘./perguntas.js;
+import {aleatorio} from ./aleatorio.js;
+import {perguntas} from ./perguntas.js;
 
 const caixaPrincipal = document.querySelector(“.caixa-principal”);
 const caixaPerguntas = document.querySelector(“.caixa-perguntas”);
@@ -12,24 +12,26 @@ export const perguntas = [
 {
 
 export function aleatorio (lista){
-    const posicao = Math.floot(Math.random()* lista.length);
+    const posicao = Math.floor(Math.random()* lista.length);
     return lista[posicao];
 
 function respostaSelecionada(opcaoSelecionada) {
     const afirmacoes = aleatorio(opcaoSelecionada.afirmacao);
 historiaFinal += afirmacoes + “ “;
 atual++;
+
 function jogaNovamente(){
     atual = 0;
     historiaFinal = "";
+    caixaResultado.classList.remove("mostrar");
     mostraPergunta();
-mostraPergunta();
 }
 
 function mostraResultado() {
-caixaPerguntas.textContent = "Em 2049...";
-textoResultado.textContent = historiaFinal;
-caixaAlternativas.textContent = "";
-botaoJogarNovamente.addEventListener("click", jogaNovamente());
+    caixaPerguntas.textContent = "Em 2049...";
+    textoResultado.textContent = historiaFinal;
+    caixaAlternativas.textContent = "";
+    caixaResultado.classList.add("mostrar");
+    botaoJogarNovamente.addEventListener("click", jogaNovamente);
 
 }
