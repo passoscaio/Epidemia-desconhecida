@@ -15,11 +15,28 @@ export function aleatorio (lista){
     const posicao = Math.floor(Math.random()* lista.length);
     return lista[posicao];
 
-function respostaSelecionada(opcaoSelecionada) {
-    const afirmacoes = aleatorio(opcaoSelecionada.afirmacao);
-    historiaFinal += afirmacoes + " ";
-    atual++;
-}
+
+function respostaSelecionada(opcaoSelecionada) { 
+
+  const afirmacoes = aleatorio(opcaoSelecionada.afirmacao); 
+
+  historiaFinal += afirmacoes + " "; 
+
+  if (opcaoSelecionada.proxima !== undefined) { 
+
+    atual = opcaoSelecionada.proxima; 
+
+  } else { 
+
+    mostraResultado(); 
+
+    return; 
+
+  } 
+
+  mostraPergunta(); 
+
+} 
 
 function jogaNovamente(){
     atual = 0;
