@@ -1,4 +1,4 @@
-
+export const perguntas
 
 const perguntas = [
   {
