@@ -33,7 +33,7 @@ export const perguntas = [
 
         alternativas: [
             {
-                texto: "Usaria a tecnologia com cautela.",
+                texto: "Buscaria recursos.",
 
                 afirmacao: [
                     "Decidiu estudar os riscos antes de confiar nas máquinas."
@@ -41,7 +41,7 @@ export const perguntas = [
             },
 
             {
-                texto: "Exploraria todas as possibilidades.",
+                texto: "Saquearia campos de sobreviventes.",
 
                 afirmacao: [
                     "Começou a explorar as possibilidades criativas e inovadoras da inteligência artificial."

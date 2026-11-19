@@ -56,9 +56,21 @@ function jogaNovamente() {
 
 function mostraResultado() {
 
-    caixaPerguntas.textContent = "Em 2049...";
+    caixaPerguntas.textContent = "2049 — O destino da humanidade";
 
-    textoResultado.textContent = historiaFinal;
+    textoResultado.textContent =
+        historiaFinal +
+        "\n\nDepois de anos de caos, medo e incerteza, o mundo que um dia conhecemos tornou-se apenas uma lembrança. " +
+
+        "Suas decisões moldaram sua jornada em meio à epidemia. Cada escolha determinou em quem confiar, quais riscos enfrentar e quais ideais defender. " +
+
+        "As três facções continuam disputando o controle dos poucos recursos que restaram. Algumas acreditam que a humanidade precisa reconstruir sua antiga civilização. " +
+
+        "Outras defendem que o mundo precisa de uma nova ordem. Há ainda aqueles que acreditam que a sobrevivência deve estar acima de qualquer ideologia. " +
+
+        "Enquanto isso, rumores sobre novas mutações do vírus começam a surgir. Ninguém sabe se a humanidade está diante de uma nova ameaça ou se ainda existe alguma esperança de encontrar uma solução. " +
+
+        "O futuro permanece incerto. Uma coisa, porém, é inevitável: o mundo nunca mais será o mesmo. Sua história está apenas começando.";
 
     caixaAlternativas.textContent = "";
 
