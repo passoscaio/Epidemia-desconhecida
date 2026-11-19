@@ -59,8 +59,7 @@ function mostraResultado() {
     caixaPerguntas.textContent = "2049 — O destino da humanidade";
 
     textoResultado.textContent =
-        historiaFinal +
-        "\n\nDepois de anos de caos, medo e incerteza, o mundo que um dia conhecemos tornou-se apenas uma lembrança. " +
+        "Depois de anos de caos, medo e incerteza, o mundo que um dia conhecemos tornou-se apenas uma lembrança. " +
 
         "Suas decisões moldaram sua jornada em meio à epidemia. Cada escolha determinou em quem confiar, quais riscos enfrentar e quais ideais defender. " +
 
