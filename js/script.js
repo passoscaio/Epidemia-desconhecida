@@ -1,157 +1,338 @@
 
-import { aleatorio, nome } from './aleatorio.js';
-import { perguntas } from './perguntas.js';
+import { perguntas } from "./perguntas.js";
+import { aleatorio, nome } from "./aleatorio.js";
 
-// Selecionando os elementos HTML
+// ==========================================
+// 1. ELEMENTOS HTML
+// ==========================================
 
 const caixaPerguntas = document.querySelector(".caixa-perguntas");
 const caixaAlternativas = document.querySelector(".caixa-alternativas");
 const caixaResultado = document.querySelector(".caixa-resultado");
+
 const textoResultado = document.querySelector(".texto-resultado");
+const tituloResultado = document.querySelector(".titulo-resultado");
+
+const telaInicial = document.querySelector(".tela-inicial");
+const botaoIniciar = document.querySelector(".iniciar-btn");
 
 const botaoJogarNovamente = document.querySelector(".novamente-btn");
-const botaoIniciar = document.querySelector(".iniciar-btn");
-const telaInicial = document.querySelector(".tela-inicial");
+const botaoCreditos = document.querySelector(".creditos-btn");
 
-// Variáveis do jogo
+const telaCreditos = document.querySelector(".tela-creditos");
+const botaoVoltarInicio = document.querySelector(".voltar-inicio-btn");
+
+// ==========================================
+// 2. ESTADO DA PARTIDA
+// ==========================================
 
 let atual = 0;
-let perguntaAtual;
 let historiaFinal = "";
+let faseDaPartida = "inicio";
 
-// Seleciona uma afirmação aleatória
+// ==========================================
+// 3. EVENTOS DOS BOTÕES
+// ==========================================
 
-function respostaSelecionada(opcaoSelecionada) {
+botaoIniciar.addEventListener("click", iniciaJogo);
 
-    const afirmacoes = aleatorio(opcaoSelecionada.afirmacao);
+botaoJogarNovamente.addEventListener("click", reiniciaJogo);
 
-    historiaFinal += afirmacoes + " ";
+botaoCreditos.addEventListener("click", mostraCreditos);
 
-    if (opcaoSelecionada.proxima !== undefined) {
+botaoVoltarInicio.addEventListener("click", reiniciaJogo);
 
-        atual = opcaoSelecionada.proxima;
-
-        mostraPergunta();
-
-    } else {
-
-        mostraResultado();
-
-    }
-}
-
-// Reinicia o jogo
-
-function jogaNovamente() {
-
-    atual = 0;
-    historiaFinal = "";
-
-    caixaResultado.classList.remove("mostrar");
-
-    mostraPergunta();
-}
-
-// Exibe o resultado final
-
-function mostraResultado() {
-
-    caixaPerguntas.textContent = "2049 — O destino da humanidade";
-
-    textoResultado.textContent =
-        "Depois de anos de caos, medo e incerteza, o mundo que um dia conhecemos tornou-se apenas uma lembrança. " +
-
-        "Suas decisões moldaram sua jornada em meio à epidemia. Cada escolha determinou em quem confiar, quais riscos enfrentar e quais ideais defender. " +
-
-        "As três facções continuam disputando o controle dos poucos recursos que restaram. Algumas acreditam que a humanidade precisa reconstruir sua antiga civilização. " +
-
-        "Outras defendem que o mundo precisa de uma nova ordem. Há ainda aqueles que acreditam que a sobrevivência deve estar acima de qualquer ideologia. " +
-
-        "Enquanto isso, rumores sobre novas mutações do vírus começam a surgir. Ninguém sabe se a humanidade está diante de uma nova ameaça ou se ainda existe alguma esperança de encontrar uma solução. " +
-
-        "O futuro permanece incerto. Uma coisa, porém, é inevitável: o mundo nunca mais será o mesmo. Sua história está apenas começando.";
-
-    caixaAlternativas.textContent = "";
-
-    caixaResultado.classList.add("mostrar");
-}
-
-// Substitui a palavra "você" pelo nome aleatório
-
-function substituiNome() {
-
-    for (const pergunta of perguntas) {
-
-        pergunta.enunciado = pergunta.enunciado.replace(/você/gi, nome);
-
-    }
-}
-
-// Inicia o jogo
+// ==========================================
+// 4. INICIAR JOGO
+// ==========================================
 
 function iniciaJogo() {
 
-    atual = 0;
-    historiaFinal = "";
+    reiniciaJogo();
+
+    faseDaPartida = "jogando";
 
     telaInicial.style.display = "none";
 
-    caixaPerguntas.classList.add("mostrar");
-    caixaAlternativas.classList.add("mostrar");
-
-    caixaResultado.classList.remove("mostrar");
+    caixaPerguntas.style.display = "block";
+    caixaAlternativas.style.display = "flex";
 
     mostraPergunta();
 }
 
-// Exibe uma pergunta
+// ==========================================
+// 5. REINICIAR JOGO
+// ==========================================
+
+function reiniciaJogo() {
+
+    atual = 0;
+
+    historiaFinal = "";
+
+    faseDaPartida = "inicio";
+
+    caixaPerguntas.textContent = "";
+
+    caixaAlternativas.replaceChildren();
+
+    tituloResultado.textContent = "";
+    textoResultado.textContent = "";
+
+    telaInicial.style.display = "block";
+
+    caixaPerguntas.style.display = "none";
+    caixaAlternativas.style.display = "none";
+    caixaResultado.style.display = "none";
+
+    telaCreditos.style.display = "none";
+
+    botaoCreditos.style.display = "none";
+
+    botaoJogarNovamente.style.display = "inline-block";
+
+    botaoJogarNovamente.textContent = "Recomeçar do início";
+}
+
+// ==========================================
+// 6. MOSTRAR PERGUNTA
+// ==========================================
 
 function mostraPergunta() {
 
-    if (atual >= perguntas.length) {
+    const perguntaAtual = perguntas[atual];
 
-        mostraResultado();
+    // Verifica se o jogador chegou a um final.
+
+    if (perguntaAtual.final === "vitoria") {
+
+        mostraVitoria(perguntaAtual.enunciado);
 
         return;
-
     }
 
-    perguntaAtual = perguntas[atual];
+    caixaPerguntas.textContent =
+        perguntaAtual.enunciado.replace(/você/gi, nome);
 
-    caixaPerguntas.textContent = perguntaAtual.enunciado;
+    caixaAlternativas.replaceChildren();
 
-    caixaAlternativas.textContent = "";
-
-    mostraAlternativas();
+    mostraAlternativas(perguntaAtual);
 }
 
-// Cria os botões das alternativas
+// ==========================================
+// 7. MOSTRAR ALTERNATIVAS
+// ==========================================
 
-function mostraAlternativas() {
+function mostraAlternativas(perguntaAtual) {
 
     for (const alternativa of perguntaAtual.alternativas) {
 
-        const botaoAlternativas = document.createElement("button");
+        const botao = document.createElement("button");
 
-        botaoAlternativas.textContent = alternativa.texto;
+        botao.textContent = alternativa.texto;
 
-        botaoAlternativas.addEventListener("click", function () {
+        botao.disabled = alternativa.disponivel === false;
+
+        botao.addEventListener("click", function () {
 
             respostaSelecionada(alternativa);
 
         });
 
-        caixaAlternativas.appendChild(botaoAlternativas);
-
+        caixaAlternativas.appendChild(botao);
     }
 }
 
-// Preparação inicial
+// ==========================================
+// 8. PROCESSAR RESPOSTA
+// ==========================================
 
-substituiNome();
+function respostaSelecionada(opcaoSelecionada) {
 
-// Eventos dos botões
+    // Impede escolhas depois do encerramento.
 
-botaoIniciar.addEventListener("click", iniciaJogo);
+    if (faseDaPartida !== "jogando") {
 
-botaoJogarNovamente.addEventListener("click", jogaNovamente);
+        return;
+    }
+
+    // Verifica se a alternativa está disponível.
+
+    if (opcaoSelecionada.disponivel === false) {
+
+        return;
+    }
+
+    // GAME OVER
+
+    if (opcaoSelecionada.tipo === "gameover") {
+
+        const afirmacao = aleatorio(opcaoSelecionada.afirmacao);
+
+        historiaFinal += afirmacao + " ";
+
+        mostraGameOver(opcaoSelecionada.mensagem);
+
+        return;
+    }
+
+    // Verifica o destino.
+
+    const destino = opcaoSelecionada.proxima;
+
+    if (!Number.isInteger(destino) || perguntas[destino] === undefined) {
+
+        console.error("Destino inválido:", destino);
+
+        return;
+    }
+
+    const origem = perguntas[atual];
+
+    const chegada = perguntas[destino];
+
+    const mudouDeCaminho = origem.caminho !== chegada.caminho;
+
+    // Permite mudanças de narrativa somente pelo tipo trocar.
+
+    if (
+        atual !== 0 &&
+        mudouDeCaminho &&
+        opcaoSelecionada.tipo !== "trocar"
+    ) {
+
+        console.error("Mudança de caminho sem o tipo trocar.");
+
+        return;
+    }
+
+    // Confere se a troca realmente leva a outra narrativa.
+
+    if (
+        opcaoSelecionada.tipo === "trocar" &&
+        !mudouDeCaminho
+    ) {
+
+        console.error("A troca deve levar a outro caminho.");
+
+        return;
+    }
+
+    // Registra a escolha.
+
+    const afirmacao = aleatorio(opcaoSelecionada.afirmacao);
+
+    historiaFinal += afirmacao + " ";
+
+    // Atualiza a posição.
+
+    atual = destino;
+
+    mostraPergunta();
+}
+
+// ==========================================
+// 9. GAME OVER
+// ==========================================
+
+function mostraGameOver(mensagem) {
+
+    faseDaPartida = "gameover";
+
+    caixaPerguntas.style.display = "none";
+
+    caixaAlternativas.replaceChildren();
+
+    caixaAlternativas.style.display = "none";
+
+    caixaResultado.style.display = "block";
+
+    tituloResultado.textContent = "GAME OVER";
+
+    textoResultado.textContent =
+        mensagem +
+        "\n\nSuas escolhas nesta tentativa:\n" +
+        historiaFinal;
+
+    botaoJogarNovamente.textContent = "Recomeçar do início";
+
+    botaoJogarNovamente.style.display = "inline-block";
+
+    botaoCreditos.style.display = "none";
+
+    telaCreditos.style.display = "none";
+}
+
+// ==========================================
+// 10. VITÓRIA — THE END
+// ==========================================
+
+function mostraVitoria(mensagem) {
+
+    // Só permite vitória nas posições finais.
+
+    if (
+        faseDaPartida !== "jogando" ||
+        perguntas[atual].final !== "vitoria"
+    ) {
+
+        return;
+    }
+
+    faseDaPartida = "vitoria";
+
+    caixaPerguntas.style.display = "none";
+
+    caixaAlternativas.replaceChildren();
+
+    caixaAlternativas.style.display = "none";
+
+    caixaResultado.style.display = "block";
+
+    tituloResultado.textContent = "THE END";
+
+    textoResultado.textContent =
+        mensagem +
+        "\n\nSeu percurso nesta partida:\n" +
+        historiaFinal;
+
+    // A vitória libera os créditos.
+
+    botaoJogarNovamente.style.display = "none";
+
+    botaoCreditos.style.display = "inline-block";
+
+    telaCreditos.style.display = "none";
+}
+
+// ==========================================
+// 11. TELA DE CRÉDITOS
+// ==========================================
+
+function mostraCreditos() {
+
+    // Somente jogadores vencedores podem acessar.
+
+    if (faseDaPartida !== "vitoria") {
+
+        return;
+    }
+
+    faseDaPartida = "creditos";
+
+    telaInicial.style.display = "none";
+
+    caixaPerguntas.style.display = "none";
+
+    caixaAlternativas.style.display = "none";
+
+    caixaResultado.style.display = "none";
+
+    telaCreditos.style.display = "block";
+}
+
+// ==========================================
+// 12. ESTADO INICIAL
+// ==========================================
+
+reiniciaJogo();
